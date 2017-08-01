@@ -198,7 +198,7 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
         </property>
     </bean>
     <!--
-    <bean id="messagesSources" class="org.springframework.context.support.ResourceBundleMessageSource">   //getting messages from property file
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">   //getting messages from property file   !!id musi byt messageSource inak getMessage() nebude fungovat
         <property name="basenames">
             <list>
                 <value>messagesResources</value>   //name of file
@@ -207,9 +207,15 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
     </bean>
         zavolanie spravy
          ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
-         context.
+         context.getMessage("greeting", null, "Default message", null)
 
-
+        metoda getMessage() je z intefacu MessageSource
+        a ApplicationContext implementuje MessageSource
+        cize ak chcem v triede circle vytvorit message pomocou message source tak si vytvorim clensku premmenu typu MessageSource
+        pre ktoru si vytvorim setter
+        kedze sa v spring.xml messageSource nachadza len raz tak mozem urobit @Autowired pre clensku premennu Circle messageSource
+        ako zdroj sprav
     -->
     <context:component-scan base-package="shapes"/>
+    <context:component-scan base-package="main"/>
 </beans>

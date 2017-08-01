@@ -12,14 +12,14 @@ public class main {
 //        Triangle triangle = (Triangle) factory.getBean("triangle");
         ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");//spring.xml do priecinku resourses
 //        Shape shape = (Shape) context.getBean("triangle");
-//        Shape shape1 = (Shape) context.getBean("circle");
+        Shape shape1 = (Shape) context.getBean("circle");
 //        if(shape==shape1)
 //            System.out.println("same");
 //        else
 //            System.out.println("not same");
 //        shape.draw();
-//        shape1.draw();
-        System.out.println(context.getMessage("greeting", null, "Default message", null));
+        shape1.draw();
+        //System.out.println(context.getMessage("greeting", null, "Default message", null));
 
                 //parameters getMessage()  name of property , parameters for this text, default value,
 /*

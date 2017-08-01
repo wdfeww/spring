@@ -1,8 +1,12 @@
 package shapes;
 
+import main.DrawEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,13 +28,24 @@ ak mam service anotaciu tak pridavam triede additional information ze sa jedna o
  */
 
 @Component
-public class Circle implements Shape {
+public class Circle implements Shape, ApplicationEventPublisherAware {
+
     private Point center;
+    private ApplicationEventPublisher applicationEventPublisher;
+
+
+    @Autowired
+    private MessageSource messageSource;
 
     public Point getCenter() {
         return center;
     }
+
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
     /*
+
     REQURED processor
     ak chcem aby spring vedel ze metoda setCenter cize ak chcem aby bola inicializacia objektu center povinna tak pouzijem anotaciu @Required pred setter
     je potrebne do spring.xml pridat bean <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
@@ -64,11 +79,20 @@ public class Circle implements Shape {
     }
 
     public void draw() {
-        System.out.println("printing circle");
-        System.out.println("center point of circle is " + getCenter().getX() +", "+getCenter().getY());
+
+        System.out.println(this.messageSource.getMessage("drawing.circle", null, "Default drawing", null));
+        System.out.println(this.messageSource.getMessage("drawing.circle.points", new Object[] {center.getX(), center.getY()}, "Default circle point show", null));
+       // System.out.println(this.messageSource.getMessage("greeting", null, "Default message", null));
+        DrawEvent drawEvent = new DrawEvent(this);
+        applicationEventPublisher.publishEvent(drawEvent);
     }
 
-    /*
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    /*ANOTACIE PRE METODY
     anotacia pre methodu ktora sa ma spustit pri inicializacii objektu
     @PostConstruct
 
