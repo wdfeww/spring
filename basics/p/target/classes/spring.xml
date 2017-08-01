@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config/><!--deklaruje vsetky annotation processors-->
+
+
+        <!--ak mam objecte seter na urcitu protery tak pouzijem xml <property name="nazov_property" value="hodnota"/> a nastavim property hodnotu
+            ak ma object costructor tak sa pouzije tag <constructor-arg value="hodnota"/> pre jednu property
+        ak ma constructor viac hodnot ktore prijma tak  to beanu vlozim tag <constructor-arg value="Big"/> viackrat pre kazdu premennu
+        ak chcem presne definovat ktora hodnota je akeho typu pouzijem property type
+        <constructor-arg type="int" value="20"/> alebo <constructor-arg type="java.lang.String" value="20"/>
+        ak je viac premennych v konstruktore a su napriklad viacere typu string
+        tak mozem pouzit indexovanie pomocou atributu index
+        <constructor-arg index="0" value="20"/>
+        <constructor-arg index="1" value="20"/>
+
+        <property name="pointA" ref="zeroPoint"/> nastavim premennej pointA hodnotu z beanu zeroPoint ktory je typu Point a ktory ma nastavene hodnoty pre body x a y
+
+    <bean id="zeroPoint" class="shapes.Point">
+        <property name="x" value="0"/>
+        <property name="y" value="0"/>
+    </bean>
+
+
+    objekt premmenej Point mozem definovat aj v beane triangle
+<bean id="triangle" class="shapes.Triangle">
+
+      <property name="pointA" />
+            <bean class="shapes.Point">
+                <property name="x" value="0"/>
+                <property name="y" value="0"/>
+            </bean>
+       </property>
+</bean>
+
+
+
+//Aliases
+<alias name="triangle" alias="triangle-alias"></alias>  ak vytvorim pomocou mena triangle-alias tak mi vytvori triangle
+    nastavit property z vytvoreneho branu mozem aj pomocou idref <property name="pointA"> <idref="zeroPoint" /> </property>
+
+
+//Collection objects
+  <bean id="triangle" class="shapes.Triangle" name="triangle-name">
+      <property name="points">
+          <list>
+              <ref bean="zeroPoint"/>
+              <ref bean="point2"/>
+              <ref bean="point3"/>
+          </list>
+      </property>
+    </bean>
+
+//AutoWiring
+ak su id beanov a mena premmentych v objekte rovnake mozem pouzit @AutoWire
+property autowire="byName" beanu cekuje mena vsetkych premmenych v objekte a porovnava s id beanov v xmlku a ak najde zhodu tak ich automaticky vytvori
+
+
+     <bean id="triangle" class="shapes.Triangle" autowire="byName">
+    </bean>
+    <bean id="pointA" class="shapes.Point">
+        <property name="x" value="0"/>
+        <property name="y" value="0"/>
+    </bean>
+    <bean id="pointB" class="shapes.Point">
+        <property name="x" value="-20"/>
+        <property name="y" value="0"/>
+    </bean>
+    <bean id="pointC" class="shapes.Point">
+        <property name="x" value="20"/>
+        <property name="y" value="0"/>
+    </bean>
+
+
+dalsi atowire je byType tento autowire najde v xmlku typ v tomto pripade Point a nahradi ho v objekte
+ak je v objekte viac pointov tak nahradi vsetky jednym a tym istym pointom
+ale v xmlku musi byt vytvoreny len jeden objekt typu Point inak spring nevie ktory point chceme pouzit
+
+
+dalsi autowire je constructor
+je rovnaky ako by type musi existovat jeden contructor v xmlku...
+
+
+//Scopes
+
+     <bean id="triangle" class="shapes.Triangle" scope="singleton"> defaultna hodnota je singleton, dalsia moznost prototype
+
+    </bean>
+
+//Bean definition inheritance
+        atribut parent - zoberie (dedi) premenne od rodica a priradi ich dietatu ak mu chyba dane property
+           <bean id="parentTriangle" class="shapes.Triangle" parent="parentTriangle">
+        <property name="pointA" ref="pointA"/>
+    </bean>
+   <bean id="triangle" class="shapes.Triangle" parent="parentTriangle">
+      <property name="pointB" ref="pointB"/>
+        <property name="pointC" ref="pointC"/>
+    </bean>
+
+    //pri liste  definition inheritance
+
+     <bean id="parentTriangle" class="shapes.Triangle" abstract="true">  ak je abstract na true tak bean nebude inirializovany bude pouzity ako template pre deti
+        <property name="points"/>
+    <list>
+        <ref bean="pointA"/>
+    </list>
+    </property>
+    </bean>
+
+    <bean id="triangle" class="shapes.Triangle" parent="parentTriangle">
+    <property name="points"/>
+    <list merge="true">
+        <ref bean="pointB"/>
+    </list>
+    </property>
+    </bean>
+
+    zoberie hodnoty z dietata a prida ich do rodica ale neprepise
+
+
+
+//
+         -->
+    <!--<bean id="parentTriangle" class="shapes.Triangle" >-->
+        <!--<property name="pointA" ref="pointA1"/>-->
+    <!--</bean>-->
+    <!--<bean id="triangle" class="shapes.Triangle" parent="parentTriangle">-->
+
+        <!--<property name="pointB" ref="pointB"/>-->
+        <!--<property name="pointC" ref="pointC"/>-->
+    <!--</bean>-->
+    <bean id="pointA1" class="shapes.Point">
+        <qualifier value="circleRelated"/>
+        <property name="x" value="${nazov.premennej1}"/>
+        <property name="y" value="${nazov.premennej2}"/>
+    </bean>
+    <bean id="pointA" class="shapes.Point">
+        <property name="x" value="0"/>
+        <property name="y" value="0"/>
+    </bean>
+    <bean id="pointB" class="shapes.Point">
+        <property name="x" value="-20"/>
+        <property name="y" value="0"/>
+    </bean>
+    <bean id="pointC" class="shapes.Point">
+        <property name="x" value="20"/>
+        <property name="y" value="0"/>
+    </bean>
+
+    <!--<bean class="main.DisplayNameBeanPostProcessor"/>-->
+
+    <!--
+    bean post processor
+    musi byt v xml zapisany
+        <bean class="main.DisplayNameBeanPostProcessor"/>
+        pred kazdou inicializaciou a kadzdou destroy beanu sa vola post processor a vola methody
+    -->
+    <!--<bean class="main.BeanFactoryPostProcessor"/>-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="config.properies"/>
+    </bean>
+    <!--
+    bean factory post processor
+    musi byt v xml zapisany
+     <bean class="main.BeanFactoryPostProcessor"/>
+     zavola sa raz pri inicializacii beans
+    -->
+
+    <!--
+    vyberanie hodnot pre premenne zo suboru
+    musime vytvorit subor ktory bude drzat hodnoty napr. config.properties
+    ktory bude pozostavat len z mena a hodnoty
+    napr.  nazov.premennej=1
+    nasledne mozem definovat hodnotu premennej v beane pomocou placeholdru
+    placeholder ${nazov.premennej}
+    <bean id="pointA1" class="shapes.Point">
+        <property name="x" value="${nazov.premennej1}"/>
+        <property name="y" value="${nazov.premennej2}"/>
+    </bean>
+
+    predtym ale musime nastavit bean factoroy post processor ktory sa stara o citanie premmennych zo suboru *.property
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="config.properies"/>  //nastavenie cesty k suboru config.property
+    </bean>
+    -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>messagesResources</value>
+            </list>
+        </property>
+    </bean>
+    <!--
+    <bean id="messagesSources" class="org.springframework.context.support.ResourceBundleMessageSource">   //getting messages from property file
+        <property name="basenames">
+            <list>
+                <value>messagesResources</value>   //name of file
+            </list>
+        </property>
+    </bean>
+        zavolanie spravy
+         ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+         context.
+
+
+    -->
+    <context:component-scan base-package="shapes"/>
+</beans>
