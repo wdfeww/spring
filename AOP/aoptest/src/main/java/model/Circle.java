@@ -1,9 +1,12 @@
 package model;
 
+import aspects.Loggable;
+
 public class Circle {
 
    private String name;
 
+    @Loggable
     public String getName() {
         return name;
     }

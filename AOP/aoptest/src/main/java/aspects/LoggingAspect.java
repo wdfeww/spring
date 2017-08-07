@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.*;
 
 @Aspect                                         //vykonat pre vsetky metody ktore maju akekolvek arguemny a aj bez arguemntov @Before("execution(* *(..))")  prazdne zatvorky znamenaju ziadne argumenty a hviezdicka znamena pre jednu alebo viac argumentov
 public class LoggingAspect {                    //vykonat pre vsetky gettery ktore vracaju cokolvek @Before("execution(public * get*())")
+
                                                 //vykonat metodu pre vsetky gettery v projekte ktore vracaju string @Before("execution(public String get*())")
     @Before("allCircleMethods()")//pred tym ako sa vykona public String getName() tak sa vykona tato metoda z akejkolvek classy ak chcem presne definovat pre ktoru classu a metodu chcem volat tuto metodu treba napisat celu cestu k triede a nazov metody
     public void LoggingAdvice() {
@@ -44,7 +45,8 @@ public class LoggingAspect {                    //vykonat pre vsetky gettery kto
         System.out.println("after finally");
     }
 
-
+    @Around("@annotation(aspects.Loggable)")  // pre vsetky metody ktore maju anotaciu @Loggable
+    public void Loggable(){}
     /*
     ak chcem pouzit around na metodu ktora nieco vracia
 
@@ -66,7 +68,9 @@ public class LoggingAspect {                    //vykonat pre vsetky gettery kto
 
 
 
-
+public void loggingAdvice(){
+    System.out.println("Logging from the advice");
+}
 
 }//anotacie @Before, @After
 //AfterReturning -vykona sa ked vrati hodnotu bez vuhodenia exceptionu
