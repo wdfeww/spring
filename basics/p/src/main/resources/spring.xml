@@ -13,6 +13,7 @@
 
         <!--ak mam objecte seter na urcitu protery tak pouzijem xml <property name="nazov_property" value="hodnota"/> a nastavim property hodnotu
             ak ma object costructor tak sa pouzije tag <constructor-arg value="hodnota"/> pre jednu property
+            ak chcem nastavit premennu v konstruktore pomocou beanu pouzijem atribut ref <constructor-arg ref="objectBean"/>
         ak ma constructor viac hodnot ktore prijma tak  to beanu vlozim tag <constructor-arg value="Big"/> viackrat pre kazdu premennu
         ak chcem presne definovat ktora hodnota je akeho typu pouzijem property type
         <constructor-arg type="int" value="20"/> alebo <constructor-arg type="java.lang.String" value="20"/>
@@ -93,6 +94,8 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
      <bean id="triangle" class="shapes.Triangle" scope="singleton"> defaultna hodnota je singleton, dalsia moznost prototype
 
     </bean>
+    singleton urobi len jednu instanciu triedy
+    a prototype vytvori novu instanciu triedy pri volani metody getBean()
 
 //Bean definition inheritance
         atribut parent - zoberie (dedi) premenne od rodica a priradi ich dietatu ak mu chyba dane property
@@ -124,7 +127,17 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
 
     zoberie hodnoty z dietata a prida ich do rodica ale neprepise
 
+//LIFECICLE OF METHODS (beans)
 
+init-method pri spusteni metody
+destroy-method pri skonceni methody
+
+tieto metody sa nachadzaju v classe ktora je definovana, musia byt public a void, bez primania nejakych argumentov
+ak je bean nastaveny ako protype bean nikdy nevykona destroy method
+ <bean id="pointB" class="shapes.Point" init-method="myMethodStartup">
+        <property name="x" value="-20"/>
+        <property name="y" value="0"/>
+    </bean>
 
 //
          -->
@@ -174,7 +187,7 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
     -->
 
     <!--
-    vyberanie hodnot pre premenne zo suboru
+    vyberanie hodnot pre premenne zo suboru PROPERTY
     musime vytvorit subor ktory bude drzat hodnoty napr. config.properties
     ktory bude pozostavat len z mena a hodnoty
     napr.  nazov.premennej=1
@@ -189,7 +202,11 @@ je rovnaky ako by type musi existovat jeden contructor v xmlku...
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations" value="config.properies"/>  //nastavenie cesty k suboru config.property
     </bean>
+
+    alebo pomocou
+    <context:property-placeholder location="classpath:ResourceBundleMessageSource.properties"/> ak sa nachadza propery file v classpathte
     -->
+
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>

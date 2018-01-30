@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 ANOTACIE PRE TRIEDU
 COMPONENT
 @Component
+@Component("beanID") definuje pre component bean id
 je anotacia ktora sa dava pred class a definuje triedu ze bude spring bean
 ak ma tuto anotaciu tak sa tato trieda moze definovat len raz cize moze exitovat len jeden bean typu (class) Circle
 a kedze point mam definovany viac krat prto tuto anotaciu nemozem pouzit pre point triedu
